@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kelola Vendor - Booklet Digital</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <link rel="stylesheet" href="css/styles.css">    
+</head>
+<body>
+    <div class="admin-container">
+        <div class="sidebar">
+            <h3 class="sidebar-title">Booklet Digital</h3>
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a class="nav-link" href="admin.html"><i class="fas fa-boxes"></i> Kelola Item</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="vendors.html"><i class="fas fa-store"></i> Kelola Vendor</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="main-content">
+            <div class="admin-header">
+                <h2>Kelola Vendor</h2>
+            </div>
+
+            <!-- Form Tambah/Edit Vendor -->
+            <div class="vendor-form">
+                <h4 id="formTitle">Tambah Vendor Baru</h4>
+                <form id="vendorForm">
+                    <input type="hidden" id="vendorId">
+                    <div class="row g-3">
+                        <div class="col-md-8">
+                            <div class="mb-3">                                
+                                <input type="text" class="form-control" id="vendorName" placeholder="Nama Vendor" required>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <button type="submit" class="btn btn-primary me-2" id="saveVendorBtn">
+                                <i class="fas fa-save"></i> Simpan
+                            </button>
+                            <button type="button" class="btn btn-secondary" id="cancelEditBtn" style="display: none;">
+                                Batal
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Tabel Daftar Vendor -->
+            <div class="vendor-table">
+                <div class="search-box p-3 border-bottom">
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-search"></i></span>
+                        <input type="text" class="form-control" id="vendorSearchInput" placeholder="Cari vendor...">
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th width="5%">No</th>
+                                <th>Nama Vendor</th>
+                                <th width="20%">Dibuat Pada</th>
+                                <th width="15%">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="vendorsTableBody">
+                            <!-- Data vendor akan dimuat di sini -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Firebase Config -->
+    <script src="js/firebase-config.js"></script>
+    <!-- Vendor Script -->
+    <script src="js/vendors.js"></script>
+</body>
+</html>
