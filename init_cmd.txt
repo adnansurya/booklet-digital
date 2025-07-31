@@ -1,0 +1,92 @@
+
+C:\Users\MKSROBOTICS\Documents\Github\booklet-digital>firebase login
+Already logged in as mikro.aos71@gmail.com
+
+C:\Users\MKSROBOTICS\Documents\Github\booklet-digital>firebase init
+
+     ######## #### ########  ######## ########     ###     ######  ########
+     ##        ##  ##     ## ##       ##     ##  ##   ##  ##       ##
+     ######    ##  ########  ######   ########  #########  ######  ######
+     ##        ##  ##    ##  ##       ##     ## ##     ##       ## ##
+     ##       #### ##     ## ######## ########  ##     ##  ######  ########
+
+You're about to initialize a Firebase project in this directory:
+
+  C:\Users\MKSROBOTICS\Documents\Github\booklet-digital
+
+✔ Are you ready to proceed? Yes
+✔ Which Firebase features do you want to set up for this directory? Press Space to select features, then Enter to confirm your choices.     
+Hosting: Configure files for Firebase Hosting and (optionally) set up GitHub Action deploys, Realtime Database: Configure a security rules  
+file for Realtime Database and (optionally) provision default instance
+
+=== Project Setup
+
+First, let's associate this project directory with a Firebase project.
+You can create multiple project aliases by running firebase use --add,
+but for now we'll just set up a default project.
+
+✔ Please select an option: Create a new project
+i  If you want to create a project in a Google Cloud organization or folder, please use "firebase projects:create" instead, and return to this command when you've created the project.
+✔ Please specify a unique project id (warning: cannot be modified afterward) [6-30 characters]:
+ booklet-digital
+✔ What would you like to call your project? (defaults to your project ID) booklet-digital
+✔ Creating Google Cloud Platform project
+✔ Adding Firebase resources to Google Cloud Platform project
+
+=== Your Firebase project is ready! ===
+
+Project information:
+   - Project ID: booklet-digital
+   - Project Name: booklet-digital
+
+Firebase console is available at
+https://console.firebase.google.com/project/booklet-digital/overview
+i  Using project booklet-digital (booklet-digital)
+
+=== Hosting Setup
+
+Your public directory is the folder (relative to your project directory) that
+will contain Hosting assets to be uploaded with firebase deploy. If you
+have a build process for your assets, use your build's output directory.
+
+✔ What do you want to use as your public directory? public
+✔ Configure as a single-page app (rewrite all urls to /index.html)? Yes
+✔ Set up automatic builds and deploys with GitHub? No
++  Wrote public/index.html
+
+=== Database Setup
+
+Firebase Realtime Database Security Rules allow you to define how your data should be
+structured and when your data can be read from and written to.
+
+✔ What file should be used for Realtime Database Security Rules? database.rules.json
+i  database: ensuring required API firebasedatabase.googleapis.com is enabled...
+!  database: missing required API firebasedatabase.googleapis.com. Enabling now...
+
+✔ It seems like you haven’t initialized Realtime Database in your project yet. Do you want to set it up? Yes
+✔ Please choose the location for your default Realtime Database instance: asia-southeast1
+✔ Creating your default Realtime Database instance: booklet-digital-default-rtdb
+i  Downloaded the existing Realtime Database Security Rules of database booklet-digital-default-rtdb from the Firebase console
++  Wrote database.rules.json
+Future modifications to database.rules.json will update Realtime Database Security Rules when you run
+firebase deploy.
+
++  Wrote configuration info to firebase.json
++  Wrote project information to .firebaserc
++  Wrote .gitignore
+
++  Firebase initialization complete!
+
+   ╭─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+   │                                                                                                                     │
+   │                                         Update available 14.11.0 → 14.11.2                                          │
+   │                                   To update to the latest version using npm, run                                    │
+   │                                            npm install -g firebase-tools                                            │
+   │   For other CLI management options, visit the CLI documentation (https://firebase.google.com/docs/cli#update-cli)   │
+   │                                                                                                                     │
+   │                                                                                                                     │
+   │                                                                                                                     │
+   ╰─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+
+
+C:\Users\MKSROBOTICS\Documents\Github\booklet-digital>
