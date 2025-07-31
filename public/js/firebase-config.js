@@ -1,14 +1,15 @@
 // js/firebase-config.js
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-  databaseURL: "https://YOUR_PROJECT_ID.firebaseio.com",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_PROJECT_ID.appspot.com",
-  messagingSenderId: "YOUR_SENDER_ID",
-  appId: "YOUR_APP_ID"
+  apiKey: "AIzaSyDMvmngMtzOwqdCXwkS1ruNnapkOoquSDs",
+  authDomain: "booklet-digital.firebaseapp.com",
+  databaseURL: "https://booklet-digital-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "booklet-digital",
+  storageBucket: "booklet-digital.firebasestorage.app",
+  messagingSenderId: "414662158261",
+  appId: "1:414662158261:web:5e7fc1459885372e2f5bfc"
 };
 
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 const database = firebase.database();
+

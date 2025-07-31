@@ -1,174 +1,243 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Booklet Digital</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome for icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        body {
-            background-color: #f8f9fa;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        .booklet-container {
-            max-width: 700px;
-            margin: 30px auto;
-            background-color: white;
-            border-radius: 10px;
-            box-shadow: 0 0 20px rgba(0,0,0,0.1);
-            padding: 25px;
-        }
-        .booklet-title {
-            color: #333;
-            font-weight: 700;
-            margin-bottom: 20px;
-        }
-        .search-box {
-            position: relative;
-            margin-bottom: 25px;
-        }
-        .search-box input {
-            padding-left: 40px;
-            border-radius: 20px;
-            border: 1px solid #ddd;
-        }
-        .search-box i {
-            position: absolute;
-            left: 15px;
-            top: 10px;
-            color: #999;
-        }
-        .item-card {
-            border-left: 4px solid #0d6efd;
-            padding: 15px;
-            margin-bottom: 20px;
-            background-color: #f8f9fa;
-            border-radius: 5px;
-            transition: all 0.3s ease;
-            display: flex;
-            gap: 15px;
-        }
-        .item-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
-        .item-image {
-            width: 120px;
-            height: 120px;
-            object-fit: cover;
-            border-radius: 5px;
-            align-self: center;
-        }
-        .item-content {
-            flex: 1;
-        }
-        .item-name {
-            font-weight: 600;
-            color: #333;
-            margin-bottom: 5px;
-        }
-        .item-vendor {
-            font-size: 0.9rem;
-            color: #666;
-            margin-bottom: 5px;
-        }
-        .item-price {
-            font-weight: 700;
-            color: #0d6efd;
-            margin-bottom: 8px;
-        }
-        .item-desc {
-            font-size: 0.85rem;
-            color: #555;
-        }
-        .divider {
-            border-top: 1px dashed #ddd;
-            margin: 20px 0;
-        }
-        @media (max-width: 576px) {
-            .item-card {
-                flex-direction: column;
-            }
-            .item-image {
-                width: 100%;
-                height: auto;
-            }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Booklet Digital</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Font Awesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+  <style>
+    body {
+      background-color: #f8f9fa;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .booklet-container {
+      max-width: 700px;
+      margin: 30px auto;
+      background-color: white;
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+      padding: 25px;
+    }
+
+    .booklet-title {
+      color: #333;
+      font-weight: 700;
+      margin-bottom: 20px;
+    }
+
+    .search-box {
+      position: relative;
+      margin-bottom: 25px;
+    }
+
+    .search-box input {
+      padding-left: 40px;
+      border-radius: 20px;
+      border: 1px solid #ddd;
+    }
+
+    .search-box i {
+      position: absolute;
+      left: 15px;
+      top: 10px;
+      color: #999;
+    }
+
+    .item-card {
+      border-left: 4px solid #0d6efd;
+      padding: 15px;
+      margin-bottom: 20px;
+      background-color: #f8f9fa;
+      border-radius: 5px;
+      transition: all 0.3s ease;
+      display: flex;
+      gap: 15px;
+    }
+
+    .item-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .item-image {
+      width: 120px;
+      height: 120px;
+      object-fit: cover;
+      border-radius: 5px;
+      align-self: center;
+    }
+
+    .item-content {
+      flex: 1;
+    }
+
+    .item-name {
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 5px;
+    }
+
+    .item-vendor {
+      font-size: 0.9rem;
+      color: #666;
+      margin-bottom: 5px;
+    }
+
+    .item-price {
+      font-weight: 700;
+      color: #0d6efd;
+      margin-bottom: 8px;
+    }
+
+    .item-desc {
+      font-size: 0.85rem;
+      color: #555;
+    }
+
+    .divider {
+      border-top: 1px dashed #ddd;
+      margin: 20px 0;
+    }
+
+    @media (max-width: 576px) {
+      .item-card {
+        flex-direction: column;
+      }
+
+      .item-image {
+        width: 100%;
+        height: auto;
+      }
+    }
+  </style>
 </head>
+
 <body>
-    <div class="container booklet-container">
-        <h1 class="booklet-title">Booklet Digital</h1>
-        <p>Dokumen digital berisi kumpulan data (alat, vendor, harga) yang terstruktur dan dapat dicari dengan mudah</p>
-        
-        <div class="search-box">
-            <i class="fas fa-search"></i>
-            <input type="text" class="form-control" placeholder="Cari alat atau vendor...">
-        </div>
-        
-        <div class="divider"></div>
-        
-        <div class="item-card">
-            <img src="https://via.placeholder.com/120x120?text=Multimeter" alt="Multimeter Digital" class="item-image">
-            <div class="item-content">
-                <div class="item-name">Multimeter Digital DT9205A</div>
-                <div class="item-vendor">CV Teknologi Jaya</div>
-                <div class="item-price">Rp 185.000</div>
-                <div class="item-desc">Akurat untuk pengukuran tegangan, arus, dan resistensi dengan tampilan digital yang mudah dibaca.</div>
-            </div>
-        </div>
-        
-        <div class="item-card">
-            <img src="https://via.placeholder.com/120x120?text=Bar+Corales" alt="Bar Corales" class="item-image">
-            <div class="item-content">
-                <div class="item-name">Bar Corales 1BV</div>
-                <div class="item-vendor">PT Perkakas Makmur</div>
-                <div class="item-price">Rp 950.000</div>
-                <div class="item-desc">Bar bertenaga tanpa kabel dengan daya tahan tinggi, cocok untuk pekerjaan berat.</div>
-            </div>
-        </div>
-        
-        <div class="item-card">
-            <img src="https://via.placeholder.com/120x120?text=Laser+Level" alt="Laser Level" class="item-image">
-            <div class="item-content">
-                <div class="item-name">Laser Level LX-320</div>
-                <div class="item-vendor">UD Maju Lestari</div>
-                <div class="item-price">Rp 1.250.000</div>
-                <div class="item-desc">Menghasilkan garis laser presisi untuk pengukuran dan leveling yang akurat.</div>
-            </div>
-        </div>
-        
-        <div class="item-card">
-            <img src="https://via.placeholder.com/120x120?text=Oscilloscope" alt="Oscilloscope" class="item-image">
-            <div class="item-content">
-                <div class="item-name">Oscilloskop 100 MHz</div>
-                <div class="item-vendor">CV Teknologi Jaya</div>
-                <div class="item-price">Rp 3.500.000</div>
-                <div class="item-desc">Alat uji dengan lebar pita 100MHz untuk analisis sinyal elektronik yang komprehensif.</div>
-            </div>
-        </div>
+  <div class="container booklet-container">
+    <h1 class="booklet-title">Booklet Digital</h1>
+    <p>Dokumen digital berisi kumpulan data (alat, vendor, harga) yang terstruktur dan dapat dicari dengan mudah</p>
+
+    <div class="search-box">
+      <i class="fas fa-search"></i>
+      <input type="text" class="form-control" placeholder="Cari alat atau vendor...">
     </div>
 
-    <!-- Bootstrap JS Bundle with Popper -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        // Simple search functionality
-        document.querySelector('.search-box input').addEventListener('input', function(e) {
-            const searchTerm = e.target.value.toLowerCase();
-            const items = document.querySelectorAll('.item-card');
+    <div class="divider"></div>
+
+    <div class="item-card">
+      <img src="https://via.placeholder.com/120x120?text=Multimeter" alt="Multimeter Digital" class="item-image">
+      <div class="item-content">
+        <div class="item-name">Multimeter Digital DT9205A</div>
+        <div class="item-vendor">CV Teknologi Jaya</div>
+        <div class="item-price">Rp 185.000</div>
+        <div class="item-desc">Akurat untuk pengukuran tegangan, arus, dan resistensi dengan tampilan digital yang mudah
+          dibaca.</div>
+      </div>
+    </div>
+
+    <div class="item-card">
+      <img src="https://via.placeholder.com/120x120?text=Bar+Corales" alt="Bar Corales" class="item-image">
+      <div class="item-content">
+        <div class="item-name">Bar Corales 1BV</div>
+        <div class="item-vendor">PT Perkakas Makmur</div>
+        <div class="item-price">Rp 950.000</div>
+        <div class="item-desc">Bar bertenaga tanpa kabel dengan daya tahan tinggi, cocok untuk pekerjaan berat.</div>
+      </div>
+    </div>
+
+    <div class="item-card">
+      <img src="https://via.placeholder.com/120x120?text=Laser+Level" alt="Laser Level" class="item-image">
+      <div class="item-content">
+        <div class="item-name">Laser Level LX-320</div>
+        <div class="item-vendor">UD Maju Lestari</div>
+        <div class="item-price">Rp 1.250.000</div>
+        <div class="item-desc">Menghasilkan garis laser presisi untuk pengukuran dan leveling yang akurat.</div>
+      </div>
+    </div>
+
+    <div class="item-card">
+      <img src="https://via.placeholder.com/120x120?text=Oscilloscope" alt="Oscilloscope" class="item-image">
+      <div class="item-content">
+        <div class="item-name">Oscilloskop 100 MHz</div>
+        <div class="item-vendor">CV Teknologi Jaya</div>
+        <div class="item-price">Rp 3.500.000</div>
+        <div class="item-desc">Alat uji dengan lebar pita 100MHz untuk analisis sinyal elektronik yang komprehensif.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap JS Bundle with Popper -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Ganti bagian script di index.html dengan ini -->
+  <script src="js/firebase-config.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const database = firebase.database();
+      const itemsRef = database.ref('items');
+
+      // Fungsi untuk menampilkan item
+      function displayItems(items) {
+        const container = document.querySelector('.booklet-container');
+        let html = `
+            <h1 class="booklet-title">Booklet Digital</h1>
+            <p>Dokumen digital berisi kumpulan data (alat, vendor, harga) yang terstruktur dan dapat dicari dengan mudah</p>
             
-            items.forEach(item => {
-                const text = item.textContent.toLowerCase();
-                if (text.includes(searchTerm)) {
-                    item.style.display = 'flex';
-                } else {
-                    item.style.display = 'none';
-                }
-            });
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" class="form-control" placeholder="Cari alat atau vendor...">
+            </div>
+            
+            <div class="divider"></div>
+        `;
+
+        if (items) {
+          Object.keys(items).forEach(key => {
+            const item = items[key];
+            html += `
+                    <div class="item-card">
+                        ${item.imageBase64 ? `<img src="${item.imageBase64}" alt="${item.name}" class="item-image">` : ''}
+                        <div class="item-content">
+                            <div class="item-name">${item.name}</div>
+                            <div class="item-vendor">${item.vendor}</div>
+                            <div class="item-price">Rp ${item.price.toLocaleString('id-ID')}</div>
+                            <div class="item-desc">${item.desc}</div>
+                        </div>
+                    </div>
+                `;
+          });
+        } else {
+          html += '<p class="text-center">Tidak ada data alat</p>';
+        }
+
+        container.innerHTML = html;
+
+        // Tambahkan event listener untuk search
+        document.querySelector('.search-box input').addEventListener('input', function (e) {
+          const searchTerm = e.target.value.toLowerCase();
+          const items = document.querySelectorAll('.item-card');
+
+          items.forEach(item => {
+            const text = item.textContent.toLowerCase();
+            item.style.display = text.includes(searchTerm) ? 'flex' : 'none';
+          });
         });
-    </script>
+      }
+
+      // Load data dari Firebase
+      itemsRef.on('value', (snapshot) => {
+        displayItems(snapshot.val());
+      });
+    });
+  </script>
 </body>
+
 </html>

@@ -1,20 +1,105 @@
-// js/admin.js
 document.addEventListener('DOMContentLoaded', function() {
     // Referensi ke Firebase Database
     const itemsRef = database.ref('items');
     
     // Elemen UI
     const itemsTableBody = document.getElementById('itemsTableBody');
-    const addItemForm = document.getElementById('addItemForm');
-    const editItemForm = document.getElementById('editItemForm');
     const saveItemBtn = document.getElementById('saveItemBtn');
     const updateItemBtn = document.getElementById('updateItemBtn');
-    const searchInput = document.getElementById('searchInput');
     
-    // Modal instances
-    const addItemModal = new bootstrap.Modal(document.getElementById('addItemModal'));
-    const editItemModal = new bootstrap.Modal(document.getElementById('editItemModal'));
-    
+    // Fungsi untuk convert image ke base64
+    function convertToBase64(file) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = error => reject(error);
+        });
+    }
+
+    // Tambah item baru dengan base64 image
+    saveItemBtn.addEventListener('click', async () => {
+        const name = document.getElementById('itemName').value;
+        const vendor = document.getElementById('itemVendor').value;
+        const price = parseFloat(document.getElementById('itemPrice').value);
+        const desc = document.getElementById('itemDesc').value;
+        const imageFile = document.getElementById('itemImage').files[0];
+        
+        if (!name || !vendor || !price || !desc) {
+            alert('Harap isi semua field yang diperlukan!');
+            return;
+        }
+        
+        let imageBase64 = '';
+        if (imageFile) {
+            try {
+                imageBase64 = await convertToBase64(imageFile);
+            } catch (error) {
+                console.error('Error converting image:', error);
+                alert('Gagal mengkonversi gambar');
+                return;
+            }
+        }
+        
+        // Simpan ke Firebase
+        itemsRef.push({
+            name,
+            vendor,
+            price,
+            desc,
+            imageBase64
+        }).then(() => {
+            alert('Item berhasil ditambahkan!');
+            document.getElementById('addItemForm').reset();
+            addItemModal.hide();
+        }).catch(error => {
+            console.error('Error adding item: ', error);
+            alert('Gagal menambahkan item');
+        });
+    });
+
+    // Update item dengan base64 image
+    updateItemBtn.addEventListener('click', async () => {
+        const itemId = document.getElementById('editItemId').value;
+        const name = document.getElementById('editItemName').value;
+        const vendor = document.getElementById('editItemVendor').value;
+        const price = parseFloat(document.getElementById('editItemPrice').value);
+        const desc = document.getElementById('editItemDesc').value;
+        const imageFile = document.getElementById('editItemImage').files[0];
+        
+        if (!name || !vendor || !price || !desc) {
+            alert('Harap isi semua field yang diperlukan!');
+            return;
+        }
+        
+        const updates = {
+            name,
+            vendor,
+            price,
+            desc
+        };
+        
+        if (imageFile) {
+            try {
+                updates.imageBase64 = await convertToBase64(imageFile);
+            } catch (error) {
+                console.error('Error converting image:', error);
+                alert('Gagal mengkonversi gambar');
+                return;
+            }
+        }
+        
+        itemsRef.child(itemId).update(updates)
+            .then(() => {
+                alert('Item berhasil diupdate!');
+                editItemModal.hide();
+            })
+            .catch(error => {
+                console.error('Error updating item: ', error);
+                alert('Gagal mengupdate item');
+            });
+    });
+
     // Load data dari Firebase
     function loadItems() {
         itemsRef.on('value', (snapshot) => {
@@ -26,8 +111,11 @@ document.addEventListener('DOMContentLoaded', function() {
                     const item = items[key];
                     const row = document.createElement('tr');
                     
+                    // Gunakan base64 image jika ada, atau placeholder jika tidak
+                    const imageSrc = item.imageBase64 || 'https://via.placeholder.com/50';
+                    
                     row.innerHTML = `
-                        <td><img src="${item.imageUrl || 'https://via.placeholder.com/50'}" alt="${item.name}"></td>
+                        <td><img src="${imageSrc}" alt="${item.name}" style="max-width: 50px; max-height: 50px;"></td>
                         <td>${item.name}</td>
                         <td>${item.vendor}</td>
                         <td>Rp ${item.price.toLocaleString('id-ID')}</td>
@@ -57,42 +145,8 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
-    
-    // Tambah item baru
-    saveItemBtn.addEventListener('click', () => {
-        const name = document.getElementById('itemName').value;
-        const vendor = document.getElementById('itemVendor').value;
-        const price = parseFloat(document.getElementById('itemPrice').value);
-        const desc = document.getElementById('itemDesc').value;
-        const imageFile = document.getElementById('itemImage').files[0];
-        
-        if (!name || !vendor || !price || !desc) {
-            alert('Harap isi semua field yang diperlukan!');
-            return;
-        }
-        
-        // Untuk sederhananya, kita akan simpan URL placeholder
-        // Di aplikasi nyata, Anda perlu upload gambar ke Firebase Storage
-        const imageUrl = 'https://via.placeholder.com/150?text=' + encodeURIComponent(name);
-        
-        // Simpan ke Firebase
-        itemsRef.push({
-            name,
-            vendor,
-            price,
-            desc,
-            imageUrl
-        }).then(() => {
-            alert('Item berhasil ditambahkan!');
-            addItemForm.reset();
-            addItemModal.hide();
-        }).catch(error => {
-            console.error('Error adding item: ', error);
-            alert('Gagal menambahkan item');
-        });
-    });
-    
-    // Edit item
+
+    // Fungsi edit item (tampilkan data di modal)
     function editItem(e) {
         const itemId = e.target.closest('.edit-btn').getAttribute('data-id');
         
@@ -106,43 +160,17 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('editItemDesc').value = item.desc;
             
             const currentImageContainer = document.getElementById('currentImageContainer');
-            currentImageContainer.innerHTML = `<img src="${item.imageUrl}" alt="Current Image">`;
+            if (item.imageBase64) {
+                currentImageContainer.innerHTML = `<img src="${item.imageBase64}" alt="Current Image" style="max-width: 100%; max-height: 150px;">`;
+            } else {
+                currentImageContainer.innerHTML = '<p>Tidak ada gambar</p>';
+            }
             
             editItemModal.show();
         });
     }
-    
-    // Update item
-    updateItemBtn.addEventListener('click', () => {
-        const itemId = document.getElementById('editItemId').value;
-        const name = document.getElementById('editItemName').value;
-        const vendor = document.getElementById('editItemVendor').value;
-        const price = parseFloat(document.getElementById('editItemPrice').value);
-        const desc = document.getElementById('editItemDesc').value;
-        const imageFile = document.getElementById('editItemImage').files[0];
-        
-        if (!name || !vendor || !price || !desc) {
-            alert('Harap isi semua field yang diperlukan!');
-            return;
-        }
-        
-        // Untuk update gambar, di aplikasi nyata perlu upload ke Firebase Storage
-        itemsRef.child(itemId).update({
-            name,
-            vendor,
-            price,
-            desc
-            // imageUrl akan tetap sama kecuali diupdate
-        }).then(() => {
-            alert('Item berhasil diupdate!');
-            editItemModal.hide();
-        }).catch(error => {
-            console.error('Error updating item: ', error);
-            alert('Gagal mengupdate item');
-        });
-    });
-    
-    // Hapus item
+
+    // Fungsi delete item
     function deleteItem(e) {
         if (confirm('Apakah Anda yakin ingin menghapus item ini?')) {
             const itemId = e.target.closest('.delete-btn').getAttribute('data-id');
@@ -157,18 +185,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
         }
     }
-    
-    // Fungsi pencarian
-    searchInput.addEventListener('input', () => {
-        const searchTerm = searchInput.value.toLowerCase();
-        const rows = itemsTableBody.querySelectorAll('tr');
-        
-        rows.forEach(row => {
-            const text = row.textContent.toLowerCase();
-            row.style.display = text.includes(searchTerm) ? '' : 'none';
-        });
-    });
-    
+
     // Load data saat halaman dimuat
     loadItems();
 });
