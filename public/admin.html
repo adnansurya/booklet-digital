@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Booklet Digital</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="admin-container">
+        <div class="sidebar">
+            <h3 class="sidebar-title">Booklet Digital</h3>
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a class="nav-link active" href="#"><i class="fas fa-boxes"></i> Kelola Item</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#"><i class="fas fa-store"></i> Kelola Vendor</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="main-content">
+            <div class="admin-header">
+                <h2>Kelola Item Alat</h2>
+                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addItemModal">
+                    <i class="fas fa-plus"></i> Tambah Item Baru
+                </button>
+            </div>
+
+            <div class="search-box mb-4">
+                <div class="input-group">
+                    <span class="input-group-text"><i class="fas fa-search"></i></span>
+                    <input type="text" class="form-control" id="searchInput" placeholder="Cari item...">
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>Gambar</th>
+                            <th>Nama Alat</th>
+                            <th>Vendor</th>
+                            <th>Harga</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="itemsTableBody">
+                        <!-- Data akan dimuat di sini -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Tambah Item -->
+    <div class="modal fade" id="addItemModal" tabindex="-1" aria-labelledby="addItemModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addItemModalLabel">Tambah Item Baru</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addItemForm">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="itemName" class="form-label">Nama Alat</label>
+                                    <input type="text" class="form-control" id="itemName" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="itemVendor" class="form-label">Vendor</label>
+                                    <input type="text" class="form-control" id="itemVendor" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="itemPrice" class="form-label">Harga</label>
+                                    <input type="number" class="form-control" id="itemPrice" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="itemImage" class="form-label">Gambar</label>
+                                    <input type="file" class="form-control" id="itemImage">
+                                    <small class="text-muted">Ukuran maksimal 2MB</small>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="itemDesc" class="form-label">Deskripsi</label>
+                                    <textarea class="form-control" id="itemDesc" rows="4" required></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="button" class="btn btn-primary" id="saveItemBtn">Simpan</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Edit Item -->
+    <div class="modal fade" id="editItemModal" tabindex="-1" aria-labelledby="editItemModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editItemModalLabel">Edit Item</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editItemForm">
+                        <input type="hidden" id="editItemId">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="editItemName" class="form-label">Nama Alat</label>
+                                    <input type="text" class="form-control" id="editItemName" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="editItemVendor" class="form-label">Vendor</label>
+                                    <input type="text" class="form-control" id="editItemVendor" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="editItemPrice" class="form-label">Harga</label>
+                                    <input type="number" class="form-control" id="editItemPrice" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="editItemImage" class="form-label">Gambar</label>
+                                    <input type="file" class="form-control" id="editItemImage">
+                                    <small class="text-muted">Biarkan kosong jika tidak ingin mengubah gambar</small>
+                                    <div class="mt-2" id="currentImageContainer"></div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="editItemDesc" class="form-label">Deskripsi</label>
+                                    <textarea class="form-control" id="editItemDesc" rows="4" required></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="button" class="btn btn-primary" id="updateItemBtn">Update</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Firebase Config -->
+    <script src="js/firebase-config.js"></script>
+    <!-- Admin Script -->
+    <script src="js/admin.js"></script>
+</body>
+</html>
