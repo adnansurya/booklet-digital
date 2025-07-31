@@ -1,89 +1,174 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Welcome to Firebase Hosting</title>
-
-    <!-- update the version number as needed -->
-    <script defer src="/__/firebase/12.0.0/firebase-app-compat.js"></script>
-    <!-- include only the Firebase features as you need -->
-    <script defer src="/__/firebase/12.0.0/firebase-auth-compat.js"></script>
-    <script defer src="/__/firebase/12.0.0/firebase-database-compat.js"></script>
-    <script defer src="/__/firebase/12.0.0/firebase-firestore-compat.js"></script>
-    <script defer src="/__/firebase/12.0.0/firebase-functions-compat.js"></script>
-    <script defer src="/__/firebase/12.0.0/firebase-messaging-compat.js"></script>
-    <script defer src="/__/firebase/12.0.0/firebase-storage-compat.js"></script>
-    <script defer src="/__/firebase/12.0.0/firebase-analytics-compat.js"></script>
-    <script defer src="/__/firebase/12.0.0/firebase-remote-config-compat.js"></script>
-    <script defer src="/__/firebase/12.0.0/firebase-performance-compat.js"></script>
-    <!-- 
-      initialize the SDK after all desired features are loaded, set useEmulator to false
-      to avoid connecting the SDK to running emulators.
-    -->
-    <script defer src="/__/firebase/init.js?useEmulator=true"></script>
-
-    <style media="screen">
-      body { background: #ECEFF1; color: rgba(0,0,0,0.87); font-family: Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; }
-      #message { background: white; max-width: 360px; margin: 100px auto 16px; padding: 32px 24px; border-radius: 3px; }
-      #message h2 { color: #ffa100; font-weight: bold; font-size: 16px; margin: 0 0 8px; }
-      #message h1 { font-size: 22px; font-weight: 300; color: rgba(0,0,0,0.6); margin: 0 0 16px;}
-      #message p { line-height: 140%; margin: 16px 0 24px; font-size: 14px; }
-      #message a { display: block; text-align: center; background: #039be5; text-transform: uppercase; text-decoration: none; color: white; padding: 16px; border-radius: 4px; }
-      #message, #message a { box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24); }
-      #load { color: rgba(0,0,0,0.4); text-align: center; font-size: 13px; }
-      @media (max-width: 600px) {
-        body, #message { margin-top: 0; background: white; box-shadow: none; }
-        body { border-top: 16px solid #ffa100; }
-      }
-    </style>
-  </head>
-  <body>
-    <div id="message">
-      <h2>Welcome</h2>
-      <h1>Firebase Hosting Setup Complete</h1>
-      <p>You're seeing this because you've successfully setup Firebase Hosting. Now it's time to go build something extraordinary!</p>
-      <a target="_blank" href="https://firebase.google.com/docs/hosting/">Open Hosting Documentation</a>
-    </div>
-    <p id="load">Firebase SDK Loading&hellip;</p>
-
-    <script>
-      document.addEventListener('DOMContentLoaded', function() {
-        const loadEl = document.querySelector('#load');
-        // // 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
-        // // The Firebase SDK is initialized and available here!
-        //
-        // firebase.auth().onAuthStateChanged(user => { });
-        // firebase.database().ref('/path/to/ref').on('value', snapshot => { });
-        // firebase.firestore().doc('/foo/bar').get().then(() => { });
-        // firebase.functions().httpsCallable('yourFunction')().then(() => { });
-        // firebase.messaging().requestPermission().then(() => { });
-        // firebase.storage().ref('/path/to/ref').getDownloadURL().then(() => { });
-        // firebase.analytics(); // call to activate
-        // firebase.analytics().logEvent('tutorial_completed');
-        // firebase.performance(); // call to activate
-        //
-        // // 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
-
-        try {
-          let app = firebase.app();
-          let features = [
-            'auth', 
-            'database', 
-            'firestore',
-            'functions',
-            'messaging', 
-            'storage', 
-            'analytics', 
-            'remoteConfig',
-            'performance',
-          ].filter(feature => typeof app[feature] === 'function');
-          loadEl.textContent = `Firebase SDK loaded with ${features.join(', ')}`;
-        } catch (e) {
-          console.error(e);
-          loadEl.textContent = 'Error loading the Firebase SDK, check the console.';
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booklet Digital</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-      });
+        .booklet-container {
+            max-width: 700px;
+            margin: 30px auto;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            padding: 25px;
+        }
+        .booklet-title {
+            color: #333;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+        .search-box {
+            position: relative;
+            margin-bottom: 25px;
+        }
+        .search-box input {
+            padding-left: 40px;
+            border-radius: 20px;
+            border: 1px solid #ddd;
+        }
+        .search-box i {
+            position: absolute;
+            left: 15px;
+            top: 10px;
+            color: #999;
+        }
+        .item-card {
+            border-left: 4px solid #0d6efd;
+            padding: 15px;
+            margin-bottom: 20px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+            display: flex;
+            gap: 15px;
+        }
+        .item-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .item-image {
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 5px;
+            align-self: center;
+        }
+        .item-content {
+            flex: 1;
+        }
+        .item-name {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        .item-vendor {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 5px;
+        }
+        .item-price {
+            font-weight: 700;
+            color: #0d6efd;
+            margin-bottom: 8px;
+        }
+        .item-desc {
+            font-size: 0.85rem;
+            color: #555;
+        }
+        .divider {
+            border-top: 1px dashed #ddd;
+            margin: 20px 0;
+        }
+        @media (max-width: 576px) {
+            .item-card {
+                flex-direction: column;
+            }
+            .item-image {
+                width: 100%;
+                height: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container booklet-container">
+        <h1 class="booklet-title">Booklet Digital</h1>
+        <p>Dokumen digital berisi kumpulan data (alat, vendor, harga) yang terstruktur dan dapat dicari dengan mudah</p>
+        
+        <div class="search-box">
+            <i class="fas fa-search"></i>
+            <input type="text" class="form-control" placeholder="Cari alat atau vendor...">
+        </div>
+        
+        <div class="divider"></div>
+        
+        <div class="item-card">
+            <img src="https://via.placeholder.com/120x120?text=Multimeter" alt="Multimeter Digital" class="item-image">
+            <div class="item-content">
+                <div class="item-name">Multimeter Digital DT9205A</div>
+                <div class="item-vendor">CV Teknologi Jaya</div>
+                <div class="item-price">Rp 185.000</div>
+                <div class="item-desc">Akurat untuk pengukuran tegangan, arus, dan resistensi dengan tampilan digital yang mudah dibaca.</div>
+            </div>
+        </div>
+        
+        <div class="item-card">
+            <img src="https://via.placeholder.com/120x120?text=Bar+Corales" alt="Bar Corales" class="item-image">
+            <div class="item-content">
+                <div class="item-name">Bar Corales 1BV</div>
+                <div class="item-vendor">PT Perkakas Makmur</div>
+                <div class="item-price">Rp 950.000</div>
+                <div class="item-desc">Bar bertenaga tanpa kabel dengan daya tahan tinggi, cocok untuk pekerjaan berat.</div>
+            </div>
+        </div>
+        
+        <div class="item-card">
+            <img src="https://via.placeholder.com/120x120?text=Laser+Level" alt="Laser Level" class="item-image">
+            <div class="item-content">
+                <div class="item-name">Laser Level LX-320</div>
+                <div class="item-vendor">UD Maju Lestari</div>
+                <div class="item-price">Rp 1.250.000</div>
+                <div class="item-desc">Menghasilkan garis laser presisi untuk pengukuran dan leveling yang akurat.</div>
+            </div>
+        </div>
+        
+        <div class="item-card">
+            <img src="https://via.placeholder.com/120x120?text=Oscilloscope" alt="Oscilloscope" class="item-image">
+            <div class="item-content">
+                <div class="item-name">Oscilloskop 100 MHz</div>
+                <div class="item-vendor">CV Teknologi Jaya</div>
+                <div class="item-price">Rp 3.500.000</div>
+                <div class="item-desc">Alat uji dengan lebar pita 100MHz untuk analisis sinyal elektronik yang komprehensif.</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Simple search functionality
+        document.querySelector('.search-box input').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const items = document.querySelectorAll('.item-card');
+            
+            items.forEach(item => {
+                const text = item.textContent.toLowerCase();
+                if (text.includes(searchTerm)) {
+                    item.style.display = 'flex';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        });
     </script>
-  </body>
+</body>
 </html>
