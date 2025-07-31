@@ -1,3 +1,11 @@
+// Di admin.html
+// firebase.auth().onAuthStateChanged(function(user) {
+//     if (!user) {
+//         // Jika belum login, redirect ke index
+//         window.location.href = 'index.html';
+//     }
+// });
+
 // Variabel global untuk menyimpan daftar vendor
 let vendorsList = [];
 

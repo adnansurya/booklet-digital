@@ -140,3 +140,10 @@ body {
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.05);
     overflow: hidden;
 }
+
+/* Tambahkan style untuk tombol navigasi */
+.nav-link[href="index.html"] {
+    margin-top: 20px;
+    border-top: 1px solid #4b545c;
+    padding-top: 10px;
+}

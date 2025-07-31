@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,8 +12,9 @@
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
-    <link rel="stylesheet" href="css/styles.css">    
+    <link rel="stylesheet" href="css/styles.css">
 </head>
+
 <body>
     <div class="admin-container">
         <div class="sidebar">
@@ -23,6 +25,11 @@
                 </li>
                 <li class="nav-item">
                     <a class="nav-link active" href="vendors.html"><i class="fas fa-store"></i> Kelola Vendor</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="index.html">
+                        <i class="fas fa-home"></i> Kembali ke Beranda
+                    </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="#"><i class="fas fa-sign-out-alt"></i> Logout</a>
@@ -42,8 +49,9 @@
                     <input type="hidden" id="vendorId">
                     <div class="row g-3">
                         <div class="col-md-8">
-                            <div class="mb-3">                                
-                                <input type="text" class="form-control" id="vendorName" placeholder="Nama Vendor" required>
+                            <div class="mb-3">
+                                <input type="text" class="form-control" id="vendorName" placeholder="Nama Vendor"
+                                    required>
                             </div>
                         </div>
                         <div class="col-md-4">
@@ -92,4 +100,5 @@
     <!-- Vendor Script -->
     <script src="js/vendors.js"></script>
 </body>
+
 </html>

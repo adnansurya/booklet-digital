@@ -180,6 +180,24 @@
 </head>
 
 <body>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container">
+      <a class="navbar-brand" href="#">Booklet Digital</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item">
+            <a class="nav-link btn btn-outline-light me-2" href="admin.html">
+              <i class="fas fa-user-shield"></i> Admin Panel
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
   <div class="container booklet-container">
     <h1 class="booklet-title">Booklet Digital</h1>
     <p>Dokumen digital berisi kumpulan data (alat, vendor, harga) yang terstruktur dan dapat dicari dengan mudah</p>
@@ -370,6 +388,26 @@
       itemsRef.on('value', (snapshot) => {
         displayItems(snapshot.val());
       });
+
+      // Tambahkan event listener untuk tombol admin jika diperlukan
+      const adminBtn = document.querySelector('.nav-link[href="admin.html"]');
+      if (adminBtn) {
+        adminBtn.addEventListener('click', function (e) {
+          // Anda bisa menambahkan pengecekan login di sini jika diperlukan
+          // atau biarkan langsung navigasi ke halaman admin
+          // Cek apakah user sudah login
+          // firebase.auth().onAuthStateChanged(function (user) {
+          //   if (user) {
+          //     // User sudah login, arahkan ke admin
+          //     window.location.href = 'admin.html';
+          //   } else {
+          //     // User belum login, tampilkan modal login
+          //     $('#loginModal').modal('show');
+          //   }
+          // });
+        });
+      }      
+
     });
   </script>
 </body>
