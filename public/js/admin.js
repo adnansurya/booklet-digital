@@ -1,3 +1,83 @@
+// Variabel global untuk menyimpan daftar vendor
+let vendorsList = [];
+
+// Fungsi untuk memuat daftar vendor
+function loadVendors() {
+    const vendorsRef = database.ref('vendors');
+    vendorsRef.on('value', (snapshot) => {
+        vendorsList = [];
+        snapshot.forEach(childSnapshot => {
+            vendorsList.push(childSnapshot.val().name);
+        });
+        // Hapus duplikat dan sort
+        vendorsList = [...new Set(vendorsList)].sort();
+    });
+}
+
+// Fungsi untuk menampilkan autocomplete
+function showAutocomplete(inputElement, results) {
+    const containerId = inputElement.id === 'itemVendor' ? 'vendorAutocomplete' : 'editVendorAutocomplete';
+    const container = document.getElementById(containerId);
+    container.innerHTML = '';
+
+    if (results.length === 0) {
+        container.style.display = 'none';
+        return;
+    }
+
+    results.forEach(vendor => {
+        const item = document.createElement('div');
+        item.className = 'vendor-autocomplete-item';
+        item.textContent = vendor;
+        item.addEventListener('click', () => {
+            inputElement.value = vendor;
+            container.style.display = 'none';
+        });
+        container.appendChild(item);
+    });
+
+    container.style.display = 'block';
+}
+
+// Fungsi untuk setup autocomplete
+function setupVendorAutocomplete() {
+    const vendorInputs = ['itemVendor', 'editItemVendor'];
+
+    vendorInputs.forEach(inputId => {
+        const input = document.getElementById(inputId);
+        const container = document.getElementById(inputId === 'itemVendor' ? 'vendorAutocomplete' : 'editVendorAutocomplete');
+
+        input.addEventListener('input', function (e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const filteredVendors = vendorsList.filter(vendor =>
+                vendor.toLowerCase().includes(searchTerm)
+            );
+            showAutocomplete(input, filteredVendors);
+        });
+
+        input.addEventListener('focus', function () {
+            if (this.value === '') {
+                showAutocomplete(this, vendorsList.slice(0, 5)); // Tampilkan 5 vendor pertama
+            }
+        });
+
+        input.addEventListener('blur', function () {
+            setTimeout(() => {
+                container.style.display = 'none';
+            }, 200);
+        });
+    });
+
+    // Sembunyikan autocomplete saat klik di luar
+    document.addEventListener('click', function (e) {
+        if (!e.target.classList.contains('form-control') ||
+            !e.target.id.includes('Vendor')) {
+            document.getElementById('vendorAutocomplete').style.display = 'none';
+            document.getElementById('editVendorAutocomplete').style.display = 'none';
+        }
+    });
+}
+
 document.addEventListener('DOMContentLoaded', function () {
     // Referensi ke Firebase Database
     const itemsRef = database.ref('items');
@@ -205,4 +285,28 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Load data saat halaman dimuat
     loadItems();
+    loadVendors();
+    setupVendorAutocomplete();
+
+    // Simpan vendor baru saat menyimpan item
+    document.getElementById('saveItemBtn').addEventListener('click', function () {
+        const vendorName = document.getElementById('itemVendor').value.trim();
+        if (vendorName && !vendorsList.includes(vendorName)) {
+            database.ref('vendors').push({
+                name: vendorName,
+                createdAt: firebase.database.ServerValue.TIMESTAMP
+            });
+        }
+    });
+
+    document.getElementById('updateItemBtn').addEventListener('click', function () {
+        const vendorName = document.getElementById('editItemVendor').value.trim();
+        if (vendorName && !vendorsList.includes(vendorName)) {
+            database.ref('vendors').push({
+                name: vendorName,
+                createdAt: firebase.database.ServerValue.TIMESTAMP
+            });
+        }
+    });
+
 });

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,6 +14,7 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
     <link rel="stylesheet" href="css/styles.css">
 </head>
+
 <body>
     <div class="admin-container">
         <div class="sidebar">
@@ -82,7 +84,8 @@
                                 </div>
                                 <div class="mb-3">
                                     <label for="itemVendor" class="form-label">Vendor</label>
-                                    <input type="text" class="form-control" id="itemVendor" required>
+                                    <input type="text" class="form-control" id="itemVendor" required autocomplete="off">
+                                    <div class="vendor-autocomplete" id="vendorAutocomplete"></div>
                                 </div>
                                 <div class="mb-3">
                                     <label for="itemPrice" class="form-label">Harga</label>
@@ -130,7 +133,9 @@
                                 </div>
                                 <div class="mb-3">
                                     <label for="editItemVendor" class="form-label">Vendor</label>
-                                    <input type="text" class="form-control" id="editItemVendor" required>
+                                    <input type="text" class="form-control" id="editItemVendor" required
+                                        autocomplete="off">
+                                    <div class="vendor-autocomplete" id="editVendorAutocomplete"></div>
                                 </div>
                                 <div class="mb-3">
                                     <label for="editItemPrice" class="form-label">Harga</label>
@@ -167,4 +172,5 @@
     <!-- Admin Script -->
     <script src="js/admin.js"></script>
 </body>
+
 </html>

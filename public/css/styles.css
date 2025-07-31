@@ -96,3 +96,31 @@ body {
     object-fit: contain;
     border-radius: 4px;
 }
+
+/* Tambahkan di styles.css */
+.vendor-autocomplete {
+    position: absolute;
+    z-index: 1000;
+    width: calc(100% - 30px);
+    max-height: 200px;
+    overflow-y: auto;
+    background: white;
+    border: 1px solid #ddd;
+    border-top: none;
+    border-radius: 0 0 4px 4px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    display: none;
+}
+
+.vendor-autocomplete-item {
+    padding: 8px 12px;
+    cursor: pointer;
+}
+
+.vendor-autocomplete-item:hover {
+    background-color: #f8f9fa;
+}
+
+.autocomplete-container {
+    position: relative;
+}
