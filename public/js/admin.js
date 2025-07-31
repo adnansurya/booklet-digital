@@ -1,12 +1,19 @@
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     // Referensi ke Firebase Database
     const itemsRef = database.ref('items');
-    
+
     // Elemen UI
     const itemsTableBody = document.getElementById('itemsTableBody');
+    const addItemForm = document.getElementById('addItemForm');
+    const editItemForm = document.getElementById('editItemForm');
     const saveItemBtn = document.getElementById('saveItemBtn');
     const updateItemBtn = document.getElementById('updateItemBtn');
-    
+    const searchInput = document.getElementById('searchInput');
+
+    // Modal instances
+    const addItemModal = new bootstrap.Modal(document.getElementById('addItemModal'));
+    const editItemModal = new bootstrap.Modal(document.getElementById('editItemModal'));
+
     // Fungsi untuk convert image ke base64
     function convertToBase64(file) {
         return new Promise((resolve, reject) => {
@@ -24,12 +31,12 @@ document.addEventListener('DOMContentLoaded', function() {
         const price = parseFloat(document.getElementById('itemPrice').value);
         const desc = document.getElementById('itemDesc').value;
         const imageFile = document.getElementById('itemImage').files[0];
-        
+
         if (!name || !vendor || !price || !desc) {
             alert('Harap isi semua field yang diperlukan!');
             return;
         }
-        
+
         let imageBase64 = '';
         if (imageFile) {
             try {
@@ -40,7 +47,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
         }
-        
+
         // Simpan ke Firebase
         itemsRef.push({
             name,
@@ -66,19 +73,19 @@ document.addEventListener('DOMContentLoaded', function() {
         const price = parseFloat(document.getElementById('editItemPrice').value);
         const desc = document.getElementById('editItemDesc').value;
         const imageFile = document.getElementById('editItemImage').files[0];
-        
+
         if (!name || !vendor || !price || !desc) {
             alert('Harap isi semua field yang diperlukan!');
             return;
         }
-        
+
         const updates = {
             name,
             vendor,
             price,
             desc
         };
-        
+
         if (imageFile) {
             try {
                 updates.imageBase64 = await convertToBase64(imageFile);
@@ -88,7 +95,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
         }
-        
+
         itemsRef.child(itemId).update(updates)
             .then(() => {
                 alert('Item berhasil diupdate!');
@@ -105,15 +112,15 @@ document.addEventListener('DOMContentLoaded', function() {
         itemsRef.on('value', (snapshot) => {
             itemsTableBody.innerHTML = '';
             const items = snapshot.val();
-            
+
             if (items) {
                 Object.keys(items).forEach(key => {
                     const item = items[key];
                     const row = document.createElement('tr');
-                    
+
                     // Gunakan base64 image jika ada, atau placeholder jika tidak
                     const imageSrc = item.imageBase64 || 'https://via.placeholder.com/50';
-                    
+
                     row.innerHTML = `
                         <td><img src="${imageSrc}" alt="${item.name}" style="max-width: 50px; max-height: 50px;"></td>
                         <td>${item.name}</td>
@@ -128,15 +135,15 @@ document.addEventListener('DOMContentLoaded', function() {
                             </button>
                         </td>
                     `;
-                    
+
                     itemsTableBody.appendChild(row);
                 });
-                
+
                 // Tambahkan event listener untuk tombol edit dan delete
                 document.querySelectorAll('.edit-btn').forEach(btn => {
                     btn.addEventListener('click', editItem);
                 });
-                
+
                 document.querySelectorAll('.delete-btn').forEach(btn => {
                     btn.addEventListener('click', deleteItem);
                 });
@@ -149,23 +156,23 @@ document.addEventListener('DOMContentLoaded', function() {
     // Fungsi edit item (tampilkan data di modal)
     function editItem(e) {
         const itemId = e.target.closest('.edit-btn').getAttribute('data-id');
-        
+
         itemsRef.child(itemId).once('value', (snapshot) => {
             const item = snapshot.val();
-            
+
             document.getElementById('editItemId').value = itemId;
             document.getElementById('editItemName').value = item.name;
             document.getElementById('editItemVendor').value = item.vendor;
             document.getElementById('editItemPrice').value = item.price;
             document.getElementById('editItemDesc').value = item.desc;
-            
+
             const currentImageContainer = document.getElementById('currentImageContainer');
             if (item.imageBase64) {
                 currentImageContainer.innerHTML = `<img src="${item.imageBase64}" alt="Current Image" style="max-width: 100%; max-height: 150px;">`;
             } else {
                 currentImageContainer.innerHTML = '<p>Tidak ada gambar</p>';
             }
-            
+
             editItemModal.show();
         });
     }
@@ -174,7 +181,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function deleteItem(e) {
         if (confirm('Apakah Anda yakin ingin menghapus item ini?')) {
             const itemId = e.target.closest('.delete-btn').getAttribute('data-id');
-            
+
             itemsRef.child(itemId).remove()
                 .then(() => {
                     alert('Item berhasil dihapus!');
@@ -185,6 +192,16 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
         }
     }
+
+    searchInput.addEventListener('input', () => {
+        const searchTerm = searchInput.value.toLowerCase();
+        const rows = itemsTableBody.querySelectorAll('tr');
+
+        rows.forEach(row => {
+            const text = row.textContent.toLowerCase();
+            row.style.display = text.includes(searchTerm) ? '' : 'none';
+        });
+    });
 
     // Load data saat halaman dimuat
     loadItems();
