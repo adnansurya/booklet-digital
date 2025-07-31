@@ -10,8 +10,8 @@
   <!-- Font Awesome for icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
   <style>
     body {
       background-color: #f8f9fa;
@@ -117,6 +117,38 @@
         height: auto;
       }
     }
+
+    /* Tambahkan di styles.css */
+    .search-box {
+      position: relative;
+      margin-bottom: 25px;
+    }
+
+    .search-box i {
+      position: absolute;
+      left: 15px;
+      top: 12px;
+      color: #999;
+    }
+
+    .search-box input {
+      padding-left: 40px;
+      border-radius: 20px;
+      border: 1px solid #ddd;
+      transition: all 0.3s ease;
+    }
+
+    .search-box input:focus {
+      border-color: #0d6efd;
+      box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+    }
+
+    .no-results {
+      text-align: center;
+      color: #666;
+      padding: 20px;
+      font-style: italic;
+    }
   </style>
 </head>
 
@@ -131,7 +163,7 @@
     </div>
 
     <div class="divider"></div>
-    
+
   </div>
 
   <!-- Bootstrap JS Bundle with Popper -->
@@ -139,56 +171,108 @@
   <!-- Ganti bagian script di index.html dengan ini -->
   <script src="js/firebase-config.js"></script>
   <script>
+    const itemsRef = database.ref('items');
     document.addEventListener('DOMContentLoaded', function () {
       const database = firebase.database();
       const itemsRef = database.ref('items');
 
       // Fungsi untuk menampilkan item
-      function displayItems(items) {
+      function displayItems(items, searchTerm = '') {
         const container = document.querySelector('.booklet-container');
-        let html = `
+
+        // Jika tidak ada item
+        if (!items) {
+          container.innerHTML = `
             <h1 class="booklet-title">Booklet Digital</h1>
             <p>Dokumen digital berisi kumpulan data (alat, vendor, harga) yang terstruktur dan dapat dicari dengan mudah</p>
             
             <div class="search-box">
                 <i class="fas fa-search"></i>
-                <input type="text" class="form-control" placeholder="Cari alat atau vendor...">
+                <input type="text" class="form-control" id="searchInput" placeholder="Cari alat atau vendor...">
             </div>
             
             <div class="divider"></div>
+            
+            <p class="text-center">Tidak ada data alat</p>
         `;
+          return;
+        }
 
-        if (items) {
-          Object.keys(items).forEach(key => {
-            const item = items[key];
-            html += `
-                    <div class="item-card">
-                        ${item.imageBase64 ? `<img src="${item.imageBase64}" alt="${item.name}" class="item-image">` : ''}
-                        <div class="item-content">
-                            <div class="item-name">${item.name}</div>
-                            <div class="item-vendor">${item.vendor}</div>
-                            <div class="item-price">Rp ${item.price.toLocaleString('id-ID')}</div>
-                            <div class="item-desc">${item.desc}</div>
-                        </div>
-                    </div>
-                `;
+        // Filter item berdasarkan search term
+        const filteredItems = Object.keys(items)
+          .map(key => ({ id: key, ...items[key] }))
+          .filter(item => {
+            if (!searchTerm) return true;
+            const term = searchTerm.toLowerCase();
+            return (
+              item.name.toLowerCase().includes(term) ||
+              (item.vendor && item.vendor.toLowerCase().includes(term)) ||
+              (item.desc && item.desc.toLowerCase().includes(term))
+            );
           });
+
+        // Urutkan item secara alfabetis
+        filteredItems.sort((a, b) => a.name.localeCompare(b.name));
+
+        // Build HTML
+        let html = `
+        <h1 class="booklet-title">Booklet Digital</h1>
+        <p>Dokumen digital berisi kumpulan data (alat, vendor, harga) yang terstruktur dan dapat dicari dengan mudah</p>
+        
+        <div class="search-box">
+            <i class="fas fa-search"></i>
+            <input type="text" class="form-control" id="searchInput" placeholder="Cari alat atau vendor..." 
+                   value="${searchTerm}">
+        </div>
+        
+        <div class="divider"></div>
+    `;
+
+        if (filteredItems.length === 0) {
+          html += `
+            <div class="no-results">
+                <i class="fas fa-search fa-2x mb-3"></i>
+                <p>Tidak ditemukan alat yang sesuai dengan "${searchTerm}"</p>
+            </div>
+        `;
         } else {
-          html += '<p class="text-center">Tidak ada data alat</p>';
+          filteredItems.forEach(item => {
+            html += `
+                <div class="item-card">
+                    ${item.imageBase64 ? `<img src="${item.imageBase64}" alt="${item.name}" class="item-image">` : ''}
+                    <div class="item-content">
+                        <div class="item-name">${item.name}</div>
+                        <div class="item-vendor">${item.vendor || '-'}</div>
+                        <div class="item-price">Rp ${item.price ? item.price.toLocaleString('id-ID') : '0'}</div>
+                        <div class="item-desc">${item.desc || 'Tidak ada deskripsi'}</div>
+                    </div>
+                </div>
+            `;
+          });
         }
 
         container.innerHTML = html;
 
         // Tambahkan event listener untuk search
-        document.querySelector('.search-box input').addEventListener('input', function (e) {
-          const searchTerm = e.target.value.toLowerCase();
-          const items = document.querySelectorAll('.item-card');
-
-          items.forEach(item => {
-            const text = item.textContent.toLowerCase();
-            item.style.display = text.includes(searchTerm) ? 'flex' : 'none';
+        const searchInput = document.getElementById('searchInput');
+        if (searchInput) {
+          let searchTimer;
+          searchInput.addEventListener('input', function (e) {
+            clearTimeout(searchTimer);
+            searchTimer = setTimeout(() => {
+              const newSearchTerm = e.target.value;
+              displayItems(items, newSearchTerm);
+            }, 300); // Delay 300ms
           });
-        });
+
+          // Fokuskan cursor di input search
+          if (searchTerm) {
+            searchInput.focus();
+            // Set posisi kursor ke akhir teks
+            const length = searchInput.value.length;
+            searchInput.setSelectionRange(length, length);
+          }
+        }
       }
 
       // Load data dari Firebase
