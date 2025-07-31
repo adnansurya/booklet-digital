@@ -1,10 +1,18 @@
-// Di admin.html
-// firebase.auth().onAuthStateChanged(function(user) {
-//     if (!user) {
-//         // Jika belum login, redirect ke index
-//         window.location.href = 'index.html';
-//     }
-// });
+const auth = firebase.auth();
+function setupLogout() {
+    const logoutBtn = document.getElementById('logoutBtn');
+    
+    logoutBtn.addEventListener('click', function() {
+        auth.signOut()
+            .then(() => {
+                window.location.href = 'index.html?logout=success';
+            })
+            .catch(error => {
+                console.error('Logout error:', error);
+                alert('Gagal logout');
+            });
+    });
+}
 
 // Variabel global untuk menyimpan daftar vendor
 let vendorsList = [];
@@ -87,6 +95,17 @@ function setupVendorAutocomplete() {
 }
 
 document.addEventListener('DOMContentLoaded', function () {
+
+    auth.onAuthStateChanged(function(user) {
+        if (!user) {
+            // Redirect ke index dengan parameter login
+            window.location.href = 'index.html?login=required';
+        } else {
+            // Jika sudah login, lanjutkan inisialisasi admin
+            setupLogout();
+            // ... kode admin lainnya ...
+        }
+    });
     // Referensi ke Firebase Database
     const itemsRef = database.ref('items');
 

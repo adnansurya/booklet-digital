@@ -12,6 +12,7 @@
   <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
   <style>
     body {
       background-color: #f8f9fa;
@@ -189,7 +190,7 @@
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav ms-auto">
           <li class="nav-item">
-            <a class="nav-link btn btn-outline-light me-2" href="admin.html">
+            <a class="nav-link btn btn-outline-light me-2 admin-btn" href="admin.html">
               <i class="fas fa-user-shield"></i> Admin Panel
             </a>
           </li>
@@ -288,88 +289,90 @@
   <script src="js/firebase-config.js"></script>
   <script>
     const itemsRef = database.ref('items');
-
     // Inisialisasi Firebase Auth
-    // const auth = firebase.auth();
+    const auth = firebase.auth();
 
-    // // Fungsi untuk menangani login
-    // function setupLogin() {
-    //   const loginForm = document.getElementById('loginForm');
-    //   const loginBtn = document.getElementById('loginBtn');
-    //   const loginSpinner = document.getElementById('loginSpinner');
-    //   const loginError = document.getElementById('loginError');
-    //   const loginModal = new bootstrap.Modal(document.getElementById('loginModal'));
+    let productDetailModal;
 
-    //   // Event listener untuk tombol admin
-    //   document.querySelectorAll('.admin-btn').forEach(btn => {
-    //     btn.addEventListener('click', function (e) {
-    //       e.preventDefault();
+    // Fungsi untuk menangani login
+    function setupLogin() {
+      const loginForm = document.getElementById('loginForm');
+      const loginBtn = document.getElementById('loginBtn');
+      const loginSpinner = document.getElementById('loginSpinner');
+      const loginError = document.getElementById('loginError');
+      const loginModal = new bootstrap.Modal(document.getElementById('loginModal'));
 
-    //       // Cek status login
-    //       auth.onAuthStateChanged(user => {
-    //         if (user) {
-    //           // Jika sudah login, redirect ke admin
-    //           window.location.href = 'admin.html';
-    //         } else {
-    //           // Jika belum login, tampilkan modal
-    //           loginModal.show();
-    //         }
-    //       });
-    //     });
-    //   });
+      // Event listener untuk tombol admin
+      document.querySelectorAll('.admin-btn').forEach(btn => {
+        btn.addEventListener('click', function (e) {
+          e.preventDefault();
 
-    //   // Proses login
-    //   loginForm.addEventListener('submit', function (e) {
-    //     e.preventDefault();
+          // Cek status login
+          auth.onAuthStateChanged(user => {
+            if (user) {
+              // Jika sudah login, redirect ke admin
+              window.location.href = 'admin.html';
+            } else {
+              // Jika belum login, tampilkan modal
+              loginModal.show();
+            }
+          });
+        });
+      });
 
-    //     const email = document.getElementById('loginEmail').value;
-    //     const password = document.getElementById('loginPassword').value;
-    //     const rememberMe = document.getElementById('rememberMe').checked;
+      // Proses login
+      loginForm.addEventListener('submit', function (e) {
+        e.preventDefault();
 
-    //     // Tampilkan spinner
-    //     loginBtn.disabled = true;
-    //     loginSpinner.classList.remove('d-none');
-    //     loginError.classList.add('d-none');
+        const email = document.getElementById('loginEmail').value;
+        const password = document.getElementById('loginPassword').value;
+        const rememberMe = document.getElementById('rememberMe').checked;
 
-    //     // Set persistence auth
-    //     const persistence = rememberMe ?
-    //       firebase.auth.Auth.Persistence.LOCAL :
-    //       firebase.auth.Auth.Persistence.SESSION;
+        // Tampilkan spinner
+        loginBtn.disabled = true;
+        loginSpinner.classList.remove('d-none');
+        loginError.classList.add('d-none');
 
-    //     auth.setPersistence(persistence)
-    //       .then(() => {
-    //         // Proses login
-    //         return auth.signInWithEmailAndPassword(email, password);
-    //       })
-    //       .then(() => {
-    //         // Login sukses
-    //         loginModal.hide();
-    //         window.location.href = 'admin.html';
-    //       })
-    //       .catch(error => {
-    //         // Tampilkan error
-    //         loginError.textContent = getLoginErrorMessage(error.code);
-    //         loginError.classList.remove('d-none');
-    //       })
-    //       .finally(() => {
-    //         loginBtn.disabled = false;
-    //         loginSpinner.classList.add('d-none');
-    //       });
-    //   });
-    // }
+        // Set persistence auth
+        const persistence = rememberMe ?
+          firebase.auth.Auth.Persistence.LOCAL :
+          firebase.auth.Auth.Persistence.SESSION;
 
-    // // Fungsi untuk menerjemahkan error code
-    // function getLoginErrorMessage(errorCode) {
-    //   const messages = {
-    //     'auth/invalid-email': 'Email tidak valid',
-    //     'auth/user-disabled': 'Akun ini dinonaktifkan',
-    //     'auth/user-not-found': 'Email tidak terdaftar',
-    //     'auth/wrong-password': 'Password salah',
-    //     'auth/too-many-requests': 'Terlalu banyak percobaan gagal. Coba lagi nanti',
-    //     'auth/network-request-failed': 'Gagal terhubung ke server'
-    //   };
-    //   return messages[errorCode] || 'Terjadi kesalahan saat login';
-    // }
+        auth.setPersistence(persistence)
+          .then(() => {
+            // Proses login
+            return auth.signInWithEmailAndPassword(email, password);
+          })
+          .then(() => {
+            // Login sukses
+            loginModal.hide();
+            window.location.href = 'admin.html';
+          })
+          .catch(error => {
+            // Tampilkan error
+            loginError.textContent = getLoginErrorMessage(error.code);
+            loginError.classList.remove('d-none');
+          })
+          .finally(() => {
+            loginBtn.disabled = false;
+            loginSpinner.classList.add('d-none');
+          });
+      });
+    }
+
+    // Fungsi untuk menerjemahkan error code
+    function getLoginErrorMessage(errorCode) {
+      const messages = {
+        'auth/invalid-email': 'Email tidak valid',
+        'auth/user-disabled': 'Akun ini dinonaktifkan',
+        'auth/user-not-found': 'Email tidak terdaftar',
+        'auth/wrong-password': 'Password salah',
+        'auth/too-many-requests': 'Terlalu banyak percobaan gagal. Coba lagi nanti',
+        'auth/network-request-failed': 'Gagal terhubung ke server'
+      };
+      return messages[errorCode] || 'Terjadi kesalahan saat login';
+    }
+
 
     // Fungsi untuk menampilkan item
     function displayItems(items, searchTerm = '') {
@@ -497,12 +500,21 @@
     }
 
     document.addEventListener('DOMContentLoaded', function () {
-      const productDetailModal = new bootstrap.Modal(document.getElementById('productDetailModal'));
+      productDetailModal = new bootstrap.Modal(document.getElementById('productDetailModal'));
 
       // Load data dari Firebase
       itemsRef.on('value', (snapshot) => {
         displayItems(snapshot.val());
-      });      
+      });
+
+      setupLogin();
+
+      // Cek jika ada parameter login di URL
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.has('login')) {
+        const loginModal = new bootstrap.Modal(document.getElementById('loginModal'));
+        loginModal.show();
+      }
     });
   </script>
 </body>

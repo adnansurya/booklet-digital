@@ -1,11 +1,18 @@
-// Di admin.html
-// firebase.auth().onAuthStateChanged(function(user) {
-//     if (!user) {
-//         // Jika belum login, redirect ke index
-//         window.location.href = 'index.html';
-//     }
-// });
-
+const auth = firebase.auth();
+function setupLogout() {
+    const logoutBtn = document.getElementById('logoutBtn');
+    
+    logoutBtn.addEventListener('click', function() {
+        auth.signOut()
+            .then(() => {
+                window.location.href = 'index.html?logout=success';
+            })
+            .catch(error => {
+                console.error('Logout error:', error);
+                alert('Gagal logout');
+            });
+    });
+}
 // Referensi ke Firebase Database
 const vendorsRef = database.ref('vendors');
 
@@ -179,5 +186,15 @@ vendorSearchInput.addEventListener('input', (e) => {
 
 // Load data saat halaman dimuat
 document.addEventListener('DOMContentLoaded', () => {
+    auth.onAuthStateChanged(function(user) {
+        if (!user) {
+            // Redirect ke index dengan parameter login
+            window.location.href = 'index.html?login=required';
+        } else {
+            // Jika sudah login, lanjutkan inisialisasi admin
+            setupLogout();
+            // ... kode admin lainnya ...
+        }
+    });
     loadVendors();
 });
