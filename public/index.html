@@ -149,6 +149,33 @@
       padding: 20px;
       font-style: italic;
     }
+
+    /* Tambahkan CSS ini */
+    .item-card {
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+
+    .item-card:hover {
+      transform: translateY(-5px);
+    }
+
+    .item-desc {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 100%;
+    }
+
+    #productDetailImage {
+      max-height: 400px;
+      width: 100%;
+      object-fit: contain;
+    }
+
+    .modal-dialog {
+      max-width: 800px;
+    }
   </style>
 </head>
 
@@ -165,6 +192,42 @@
     <div class="divider"></div>
 
   </div>
+  <div class="modal fade" id="productDetailModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="productDetailTitle"></h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-md-6">
+              <img id="productDetailImage" src="" class="img-fluid rounded mb-3" alt="Product Image">
+            </div>
+            <div class="col-md-6">
+              <table class="table">
+                <tr>
+                  <th>Vendor</th>
+                  <td id="productDetailVendor"></td>
+                </tr>
+                <tr>
+                  <th>Harga</th>
+                  <td id="productDetailPrice"></td>
+                </tr>
+                <tr>
+                  <th>Deskripsi</th>
+                  <td id="productDetailDesc"></td>
+                </tr>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- Bootstrap JS Bundle with Popper -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -175,6 +238,7 @@
     document.addEventListener('DOMContentLoaded', function () {
       const database = firebase.database();
       const itemsRef = database.ref('items');
+      const productDetailModal = new bootstrap.Modal(document.getElementById('productDetailModal'));
 
       // Fungsi untuk menampilkan item
       function displayItems(items, searchTerm = '') {
@@ -238,7 +302,7 @@
         } else {
           filteredItems.forEach(item => {
             html += `
-                <div class="item-card">
+                <div class="item-card" data-id="${item.id}">
                     ${item.imageBase64 ? `<img src="${item.imageBase64}" alt="${item.name}" class="item-image">` : ''}
                     <div class="item-content">
                         <div class="item-name">${item.name}</div>
@@ -273,7 +337,34 @@
             searchInput.setSelectionRange(length, length);
           }
         }
+
+        // Tambahkan event listener untuk card produk
+        document.querySelectorAll('.item-card').forEach(card => {
+          card.addEventListener('click', function () {
+            const itemId = this.getAttribute('data-id');
+            const item = items[itemId];
+            showProductDetail(item);
+          });
+        });
       }
+
+      function showProductDetail(item) {
+        document.getElementById('productDetailTitle').textContent = item.name;
+        document.getElementById('productDetailVendor').textContent = item.vendor;
+        document.getElementById('productDetailPrice').textContent = `Rp ${item.price.toLocaleString('id-ID')}`;
+        document.getElementById('productDetailDesc').textContent = item.desc;
+
+        const imgElement = document.getElementById('productDetailImage');
+        if (item.imageBase64) {
+          imgElement.src = item.imageBase64;
+          imgElement.style.display = 'block';
+        } else {
+          imgElement.style.display = 'none';
+        }
+
+        productDetailModal.show();
+      }
+
 
       // Load data dari Firebase
       itemsRef.on('value', (snapshot) => {
